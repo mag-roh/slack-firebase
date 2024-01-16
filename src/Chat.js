@@ -3,7 +3,7 @@ import "./Chat.css";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import { useParams } from "react-router-dom";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import db from "./firebase";
+import axios from "./axios";
 import Message from "./Message";
 import ChatInput from "./ChatInput";
 const Chat = () => {
@@ -11,9 +11,11 @@ const Chat = () => {
   const [roomDetails, setRoomDetails] = useState("");
   const [roomMessages, setRoomMessages] = useState([]);
   useEffect(() => {
-    db.collection("rooms")
-      .doc(roomId)
-      .onSnapshot((snapshot) => setRoomDetails(snapshot.data()));
+    if (roomId) {
+      db.collection("rooms")
+        .doc(roomId)
+        .onSnapshot((snapshot) => setRoomDetails(snapshot.data()));
+    }
     //getting the messages in the body of the page from the collections and ordering them in ascending order according to the timestamp
     db.collection("rooms")
       .doc(roomId)
@@ -22,7 +24,7 @@ const Chat = () => {
       .onSnapshot((snapshot) =>
         setRoomMessages(snapshot.docs.map((doc) => doc.data()))
       );
-  }, [roomId]);
+    
 
   console.log(roomDetails);
   console.log(roomMessages);
